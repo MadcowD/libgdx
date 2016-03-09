@@ -187,7 +187,7 @@ public class IntArray {
 		return value;
 	}
 
-	/** Removes the items at the specified indices, inclusive. */
+	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
 		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
@@ -309,12 +309,25 @@ public class IntArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		int[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + items[i];
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof IntArray)) return false;
 		IntArray array = (IntArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		int[] items1 = this.items;
+		int[] items2 = array.items;
 		for (int i = 0; i < n; i++)
 			if (items[i] != array.items[i]) return false;
 		return true;
